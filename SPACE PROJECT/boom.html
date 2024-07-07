@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rocket Shooting Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+        }
+
+        #rocket {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            width: 50px;
+            height: 100px;
+            background: url('rocket.png') no-repeat center center / cover;
+        }
+
+        .bullet {
+            position: absolute;
+            width: 5px;
+            height: 20px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameArea">
+        <div id="rocket"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameArea = document.getElementById('gameArea');
+            const rocket = document.getElementById('rocket');
+            
+            const rocketSpeed = 10;
+            const bulletSpeed = 5;
+
+            function moveRocket(event) {
+                switch (event.key) {
+                    case 'ArrowLeft':
+                        rocket.style.left = `${Math.max(0, rocket.offsetLeft - rocketSpeed)}px`;
+                        break;
+                    case 'ArrowRight':
+                        rocket.style.left = `${Math.min(window.innerWidth - rocket.clientWidth, rocket.offsetLeft + rocketSpeed)}px`;
+                        break;
+                    case ' ':
+                        shoot();
+                        break;
+                }
+            }
+
+            function shoot() {
+                const bullet = document.createElement('div');
+                bullet.className = 'bullet';
+                bullet.style.left = `${rocket.offsetLeft + rocket.clientWidth / 2}px`;
+                bullet.style.bottom = `${rocket.clientHeight}px`;
+                gameArea.appendChild(bullet);
+
+                const bulletInterval = setInterval(() => {
+                    bullet.style.bottom = `${parseInt(bullet.style.bottom) + bulletSpeed}px`;
+                    if (parseInt(bullet.style.bottom) > window.innerHeight) {
+                        clearInterval(bulletInterval);
+                        bullet.remove();
+                    }
+                }, 10);
+            }
+
+            document.addEventListener('keydown', moveRocket);
+        });
+    </script>
+</body>
+</html>
